@@ -28,6 +28,7 @@ lvl=1
 lives=3
 timer=5
 itimer=4
+friction=0.90
 
 function init_block(t,x,y)
  b={}
@@ -128,10 +129,12 @@ function init_level_1()
  lvl=1
  itimer=0--@todo set this to 4
  timer=6--@todo set this to 6
+ friction=0.90
 end
 
 function init_level_2()
  bs={}
+ xs={}
  xoffset=16
  offset=100
  px=4*8
@@ -144,10 +147,11 @@ function init_level_2()
  lvl=2
  itimer=4--@todo set this to 4
  timer=6--@todo set this to 6
+ friction=0.999
 end
 
 function _init()
- init_level_1()
+ init_level_2()
 end
 
 function _update60()
@@ -258,7 +262,7 @@ function _update60()
  end
  
  if(ground)then
-  dx=dx*0.90
+  dx=dx*friction
   jump=0
  end
  
