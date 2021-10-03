@@ -11,7 +11,7 @@ __lua__
 --global variables
 offset=0
 xoffset=0
-scr_spd=0.1
+scr_spd=0.2
 px=0
 py=0
 dy=0
@@ -26,7 +26,8 @@ intro=true
 gameover=false
 lvl=1
 lives=3
-timer=3
+timer=5
+itimer=4
 
 function init_block(t,x,y)
  b={}
@@ -58,14 +59,17 @@ function init_level_1()
  add(bs,init_block(48,7*8,41*8))
  add(bs,init_block(48,8*8,41*8))
  offset=100
+ xoffset=0
  px=4*8
  py=59*8
  dx=0
  dy=0
  fx=10*8
- fy=3*8
+ fy=59*8
  ground=false
  lvl=1
+ itimer=4
+ timer=5
 end
 
 function init_level_2()
@@ -80,6 +84,8 @@ function init_level_2()
  fy=3*8
  ground=false
  lvl=2
+ itimer=4
+ timer=5
 end
 
 function _init()
@@ -91,7 +97,9 @@ function _update60()
   timer-=1/60
  end
  
- if(gameover==true)then
+ if(itimer>0)then
+  itimer-=1/60
+ elseif(gameover==true)then
   if(btnp(0) or btnp(1) or
    btnp(2) or btnp(3) or
    btnp(4) or btnp(5))
@@ -255,11 +263,9 @@ function _draw()
 		  spr(17,i*8,608-offset)
 		  spr(dc+2,i*8,600-offset)
 		 end 
-		 spr(55,fx,fy)
+		 spr(dc+55,fx,fy)
 		 spr(57,fx,fy+8)
-		
 		 foreach(bs,draw_b)
-		
 		
 		 print(px,128,430)
 		end
@@ -273,9 +279,14 @@ function die()
  lives-=1
  if(lives<=0)then
   gameover=true
+  itimer=6
  else
   intro=true
-  init_level_1()
+  if(lvl==1)then
+   init_level_1()
+  elseif(lvl==2)then
+   init_level_2()
+  end
  end
 end
 
@@ -332,12 +343,20 @@ end
 function draw_lvl_intro(l)
  print("level ".. l,50,20)
  print("lives: "..lives,48,28)
- print("press any button to play",16,36)
+ if(itimer>0)then
+  print(flr(itimer),64,36)
+ else
+  print("press any button to play",16,36)
+ end
 end
 
 function draw_gameover(l)
  print("game over",46,20)
- print("press any button to play",16,28)
+ if(itimer>0)then
+  print(flr(itimer),64,36)
+ else
+  print("press any button to play",16,28)
+ end
 end
 __gfx__
 0000000000aa90000000100000001000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
