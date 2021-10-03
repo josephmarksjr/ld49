@@ -11,11 +11,13 @@ xoffset=0
 scr_spd=0.2
 px=0
 py=0
+ps=7
 dy=0
 dx=0
 fx=0
 fy=0
 ground=false
+pc=1
 dc=0//drill cell for animation
 txt="hello"//debug text
 bs={}
@@ -124,7 +126,7 @@ function init_level_1()
  fy=3*8
  ground=false
  lvl=1
- itimer=4--@todo set this to 4
+ itimer=0--@todo set this to 4
  timer=6--@todo set this to 6
 end
 
@@ -185,11 +187,23 @@ function _update60()
  if(btn(0))then
   dx=dx-0.05
   dx=dx-0.05
+  
+  if(pc>10)then
+   pc=1
+  else
+  	pc+=0.5
+  end
  end
  
  --right
  if(btn(1))then
   dx=dx+0.05
+  
+  if(pc>10)then
+   pc=1
+  else
+  	pc+=0.5
+  end
  end
  
  --jump
@@ -326,7 +340,7 @@ function _draw()
 		 cls()
 		 map(xoffset,0,0,0,16,64)
 		 camera(0,488-offset)
-		 spr(32,px,py)
+		 draw_p()
 		 for i=0,16 do
 		  spr(17,i*8,608-offset)
 		  spr(dc+2,i*8,600-offset)
@@ -338,6 +352,27 @@ function _draw()
 		
 		 --print(offset,px,py)
 		end
+end
+
+function draw_p()
+ if(dx>0)then
+  ps=23
+ end
+ if(dx<0)then
+  ps=7
+ end
+ pss=ps
+ 
+ if(dx!=0)then
+  if(ground==false)then
+   pss=ps+3
+  elseif(pc>5)then
+   pss=ps+2
+  else
+   pss=ps+1
+  end
+ end
+ spr(pss,px,py)
 end
 
 function draw_b(b)
