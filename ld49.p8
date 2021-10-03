@@ -171,7 +171,7 @@ function _update60()
   end
  else
  
- if(timer<0)then
+ if(timer<0 and offset<488)then
   offset+=scr_spd
   if(offset<-127)then
    offset=0
@@ -336,7 +336,7 @@ function _draw()
 		 foreach(bs,draw_b)
 		 foreach(xs,draw_s)
 		
-		 print(px,128,430)
+		 --print(offset,px,py)
 		end
 end
 
