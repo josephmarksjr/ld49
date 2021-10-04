@@ -184,11 +184,6 @@ function _update60()
   end
  end
  
- if(btn(4))then
-  px-=1
-  py-=1
- end
- 
  --gravity
  dy=dy+0.05
  
@@ -215,7 +210,7 @@ function _update60()
  end
  
  --jump
- if(btnp(2))then
+ if(btnp(2) or btnp(4))then
   if(ground)then
    ground=false
    dy=dy-1.9
@@ -310,7 +305,16 @@ function _update60()
   win()
  end
  
- py=py+dy
+ newpy=py+dy
+ --hacky solution to shake free
+ if(btnp(5) or btnp(3))
+ then
+  if(fget(mget(px/8,(py+8)/8))<1)then
+   newpy=py+4
+  end
+ end
+ 
+ py=newpy
  px=px+dx
  end
 end
@@ -460,7 +464,9 @@ function draw_lvl_intro(l)
  print("demolition mouse",0,20)
  print("reach the flag at the top",0,28)
  print("before building is demolished",0,36)
- sp=3*8+10
+ print("(press ⬇️ or ❎/x if stuck!)",0,44)
+ 
+ sp=4*8+10
 
  if(lvl==3)then
   print("you won!",0,sp+20)
