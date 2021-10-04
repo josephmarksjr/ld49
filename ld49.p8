@@ -24,7 +24,7 @@ bs={}
 xs={}
 intro=true
 gameover=false
-lvl=1
+lvl=3
 lives=3
 timer=5
 itimer=4
@@ -127,8 +127,8 @@ function init_level_1()
  fy=3*8
  ground=false
  lvl=1
- itimer=0--@todo set this to 4
- timer=6--@todo set this to 6
+ itimer=4
+ timer=6
  friction=0.90
 end
 
@@ -145,13 +145,13 @@ function init_level_2()
  fy=3*8
  ground=false
  lvl=2
- itimer=4--@todo set this to 4
- timer=6--@todo set this to 6
+ itimer=4
+ timer=6
  friction=0.999
 end
 
 function _init()
- init_level_2()
+ init_game()
 end
 
 function _update60()
@@ -161,7 +161,7 @@ function _update60()
  
  if(itimer>0)then
   itimer-=1/60
- elseif(gameover==true)then
+ elseif(gameover==true or lvl==3)then
   if(btnp(0) or btnp(1) or
    btnp(2) or btnp(3) or
    btnp(4) or btnp(5))
@@ -184,12 +184,16 @@ function _update60()
   end
  end
  
+ if(btn(4))then
+  px-=1
+  py-=1
+ end
+ 
  --gravity
  dy=dy+0.05
  
  --left
  if(btn(0))then
-  dx=dx-0.05
   dx=dx-0.05
   
   if(pc>10)then
@@ -339,22 +343,21 @@ function _draw()
   elseif(intro==true)then
    cls()
    camera(0,0)
-   draw_lvl_intro(1)
+   draw_lvl_intro(lvl)
   else
 		 cls()
 		 map(xoffset,0,0,0,16,64)
 		 camera(0,488-offset)
 		 draw_p()
-		 for i=0,16 do
-		  spr(17,i*8,608-offset)
-		  spr(dc+2,i*8,600-offset)
-		 end 
 		 spr(dc+55,fx,fy)
 		 spr(57,fx,fy+8)
 		 foreach(bs,draw_b)
 		 foreach(xs,draw_s)
-		
-		 --print(offset,px,py)
+		 
+		 for i=0,16 do
+		  spr(17,i*8,608-offset)
+		  spr(dc+2,i*8,600-offset)
+		 end 
 		end
 end
 
@@ -404,8 +407,11 @@ end
 
 function win()
  intro=true
+ itimer=5
  if(lvl==1)then
   init_level_2()
+ elseif(lvl==2)then
+  lvl=3
  end
 end
 
@@ -427,15 +433,13 @@ function hit_o(x,y,w,h,ox,oy)
 end
 
 function hit(x,y,w,h,t)
- x+=xoffset*8
+ x+=(xoffset*8)
  collide=false
  for i=x,x+w,w do
- 	local a=fget(mget(i/8,y/8))
- 	local b=fget(mget(i/8,(y+h)/8))
-  if(a>0)then
-   collide=true
-  end
-  if(b>0)then
+ 	if
+ 	 (fget(mget(i/8,y/8))>0) or
+   (fget(mget(i/8,(y+h)/8))>0)
+  then
    collide=true
   end
  end
@@ -453,12 +457,26 @@ function hit(x,y,w,h,t)
 end
 
 function draw_lvl_intro(l)
- print("level ".. l,50,20)
- print("lives: "..lives,48,28)
- if(itimer>0)then
-  print(flr(itimer),64,36)
+ print("demolition mouse",0,20)
+ print("reach the flag at the top",0,28)
+ print("before building is demolished",0,36)
+ sp=3*8+10
+
+ if(lvl==3)then
+  print("you won!",0,sp+20)
+  print("you beat both levels!",0,sp+28)
+  print("thanks for playing!",0,sp+36)
  else
-  print("press any button to play",16,36)
+  print("level "..l.."/2",0,sp+20)
+  print("lives: "..lives,0,sp+28)
+ end
+ 
+ sp+=10
+ 
+ if(itimer>0)then
+  print(flr(itimer),64,sp+50)
+ else
+  print("press ⬆️⬇️⬅️➡️ to play",16,sp+50)
  end
 end
 
